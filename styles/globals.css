@@ -1,0 +1,1310 @@
+@import "tailwindcss";
+@import 'leaflet/dist/leaflet.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.map-view {
+   position: relative;
+  width: 100%;
+  height: 100vh; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  margin-left: 0;
+  min-height: 100vh;
+}
+.menu-mobile {
+  margin-top: 10px;
+}
+/* ===== LOADING ===== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Conteneur du header */
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 20;
+  overflow: hidden; /* Empêche débordement des enfants */
+}
+
+/* Menu utilisateur */
+.user-menu {
+  position: relative;
+   z-index: 50;
+}
+
+/* Avatar rond */
+.avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: 100%; /* juste en dessous de l’avatar */
+  right: 0;
+  margin-top: 8px;
+  width: 160px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  overflow: hidden; /* empêche débordement des enfants */
+  z-index: 100;
+}
+
+/* Email dans le dropdown */
+.email {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* tronque si texte trop long */
+}
+
+/* Bouton déconnexion */
+.logout-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  color: #dc2626;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #f3f4f6;
+}
+
+/* Bouton connexion */
+.login-btn {
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #1d4ed8;
+}
+
+
+/* ===== CURRENT WEATHER ===== */
+.current-weather {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: visible;
+}
+
+.weather-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.location-icon {
+  width: 24px;
+  height: 24px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.location h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.country {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.temperature-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.temp-main {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temperature {
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.unit {
+  font-size: 24px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.weather-icon img {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-description .description {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.feels-like {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== WEATHER DETAILS GRID ===== */
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.detail-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.detail-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+}
+
+.detail-header span {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.detail-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ===== FORECAST SECTION ===== */
+.forecast-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.section-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.forecast-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.forecast-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.forecast-date {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.forecast-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 8px;
+}
+
+.forecast-temps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.temp-max {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.temp-min {
+  color: #64748b;
+}
+
+.forecast-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+
+/* ===== SUCCESS BANNER ===== */
+.success-banner {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.success-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.success-banner h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.success-banner p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== ERROR CONTAINER ===== */
+.error-container {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.error-container button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+/* ===== OVERLAY (Mobile) ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* ===== Weather Advice ===== */
+
+.weather-advice {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+}
+
+.advice-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.advice-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.advice-subtitle {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.advice-content {
+  display: grid;
+  gap: 20px;
+}
+
+.advice-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.advice-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+
+.advice-icon {
+  font-size: 1.2rem;
+}
+
+.advice-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.advice-list li {
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.advice-list li:before {
+  content: "•";
+  color: #ffd700;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.advice-list li:last-child {
+  margin-bottom: 0;
+}
+
+.advice-loading,
+.advice-error {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.advice-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.loading-spinner-small {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.advice-error {
+  color: #ffcccb;
+  background: rgba(255, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.advice-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.advice-footer small {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* Carte principale */
+.plan-card {
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 24px; /* espacement vertical entre les cartes */
+}
+
+.plan-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.plan-header {
+  padding: 32px;
+  color: #ffffff;
+  position: relative;
+}
+
+.plan-header.popular {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+}
+
+.plan-header.enterprise {
+  background: linear-gradient(135deg, #374151, #1f2937);
+}
+
+.plan-header.default {
+  background: linear-gradient(135deg, #374151, #1f2937);
+}
+
+/* Badge Popular */
+.plan-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Titre et prix */
+.plan-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.plan-price-container {
+  display: flex;
+  align-items: baseline;
+}
+
+.plan-price {
+  font-size: 2.25rem;
+  font-weight: bold;
+}
+
+.plan-period {
+  font-size: 1rem;
+  margin-left: 8px;
+  opacity: 0.8;
+}
+
+/* Features */
+.plan-features {
+  padding: 32px 24px;
+}
+
+.plan-features ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  color: #374151;
+}
+
+.feature-icon {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.feature-check {
+  width: 12px;
+  height: 12px;
+  color: #22c55e;
+}
+
+/* Button */
+.plan-button-container {
+  padding: 0 24px 32px 24px;
+}
+
+.plan-button {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.plan-button.popular {
+  background-color: #9333ea;
+  color: #ffffff;
+}
+
+.plan-button.popular:hover {
+  background-color: #7e22ce;
+}
+
+.plan-button.default {
+  background-color: #f3f4f6;
+  color: #9333ea;
+  border: 1px solid #9333ea;
+}
+
+.plan-button.default:hover {
+  background-color: #e5e7eb;
+}
+.custom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* --- Modal Overlay --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* --- Modal Content --- */
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  text-align: center;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* --- Animation --- */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Header --- */
+.modal-header {
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.modal-icon {
+  width: 24px;
+  height: 24px;
+  color: #4f46e5; /* Indigo pour rappel du signin */
+}
+
+.modal-subtitle {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #374151; /* Gray-700 */
+}
+
+/* --- Actions --- */
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.modal-login-btn, .modal-close-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* --- Login Button --- */
+.modal-login-btn {
+  background-color: #4f46e5; /* Indigo-600 */
+  color: #fff;
+}
+
+.modal-login-btn:hover {
+  background-color: #4338ca; /* Indigo-700 */
+}
+
+/* --- Close Button --- */
+.modal-close-btn {
+  background-color: #e5e7eb; /* Gray-200 */
+  color: #111827; /* Gray-900 */
+}
+
+.modal-close-btn:hover {
+  background-color: #d1d5db; /* Gray-300 */
+}
+
+
+/* Responsivité mobile */
+@media (max-width: 768px) {
+  .plan-card {
+    margin-bottom: 16px; /* moins d’espace sur mobile */
+  }
+
+  .plan-header {
+    padding: 24px;
+  }
+
+  .plan-features {
+    padding: 24px;
+  }
+
+  .plan-title {
+    font-size: 1.125rem;
+    margin-bottom: 32px;
+  }
+
+  .plan-price {
+    font-size: 2rem;
+  }
+
+  .plan-period {
+    font-size: 0.875rem;
+  }
+
+  .plan-button-container {
+    padding: 0 16px 24px 16px;
+  }
+}
+
+/* ===== SIGNIN ===== */
+/* Page et container */
+.signin-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 50%, #dbeafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Card principale */
+.signin-card {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #bae6fd;
+}
+
+/* Header */
+.signin-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.signin-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0ea5e9;
+}
+
+.signin-subtitle {
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+/* Icônes */
+.signin-icon-small {
+  width: 24px;
+  height: 24px;
+}
+
+.signin-icon-error {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Messages d’erreur */
+.signin-error {
+  display: flex;
+  align-items: center;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* Formulaire */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.3);
+}
+
+/* Password toggle */
+.password-group {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 65%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* Bouton */
+.signin-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.signin-button:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%);
+  transform: scale(1.05);
+}
+
+/* Footer lien inscription */
+.signin-footer {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.signup-link {
+  color: #0ea5e9;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+/* --- Séparateur --- */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.separator:not(:empty)::before {
+  margin-right: 0.75em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: 0.75em;
+}
+
+.google-button {
+  width: 100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
+  transition:all .15s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.google-button:hover { transform: translateY(-2px); background:#f8fafc; }
+.google-icon svg { width:18px; height:18px; display:block;}
+
+
+/* Petits éléments météo animés */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.cloud-animate {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+  color: #d1d5db;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.sun-animate {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  width: 24px;
+  height: 24px;
+  color: #facc15;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #e0f2fe, #ffffff, #bfdbfe);
+  padding: 16px;
+}
+
+.auth-card {
+  position: relative;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 32px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #0284c7;
+}
+
+.auth-subtitle {
+  color: #4b5563;
+  margin-top: 8px;
+}
+
+.auth-form .form-group {
+  margin-bottom: 16px;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 4px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.auth-form input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2,132,199,0.2);
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 65%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 0.75rem;
+  background: linear-gradient(to right, #0284c7, #2563eb);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-button:hover {
+  transform: scale(1.03);
+  background: linear-gradient(to right, #0369a1, #1d4ed8);
+}
+
+.auth-footer {
+  margin-top: 16px;
+  text-align: center;
+  color: #4b5563;
+}
+
+.signup-link {
+  color: #0284c7;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.sun-animate {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  width: 24px;
+  height: 24px;
+  color: #facc15;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+.cloud-animate {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+  color: #d1d5db;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+
+/* Responsive */
+@media (min-width: 768px) {
+  .advice-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .advice-section:only-child,
+  .advice-section:nth-child(odd):last-child {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .weather-advice {
+    padding: 32px;
+  }
+  
+  .advice-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .advice-section {
+    padding: 20px;
+  }
+}
+
+
+
+/* Animation d'apparition */
+.weather-advice {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+  .sidebar {
+    position: relative;
+    transform: translateX(0);
+  }
+  
+  .menu-toggle {
+    display: none;
+  }
+  
+  .main-content {
+    margin-left: 280px;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-content {
+    padding: 16px;
+    padding-top: 80px;
+  }
+  
+  .weather-main {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .temperature {
+    font-size: 48px;
+  }
+  
+  .weather-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .forecast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .forecast-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/*
+  The following Tailwind directives require your build process to use Tailwind CSS.
+  Make sure your project is set up with Tailwind and PostCSS.
+*/

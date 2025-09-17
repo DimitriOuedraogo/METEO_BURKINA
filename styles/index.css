@@ -1,0 +1,382 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  margin-left: 0;
+  min-height: 100vh;
+}
+
+/* ===== LOADING ===== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== CURRENT WEATHER ===== */
+.current-weather {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.location-icon {
+  width: 24px;
+  height: 24px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.location h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.country {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.temperature-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.temp-main {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temperature {
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.unit {
+  font-size: 24px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.weather-icon img {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-description .description {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.feels-like {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ===== WEATHER DETAILS GRID ===== */
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.detail-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.detail-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+}
+
+.detail-header span {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.detail-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ===== FORECAST SECTION ===== */
+.forecast-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.section-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.forecast-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.forecast-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.forecast-date {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.forecast-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 8px;
+}
+
+.forecast-temps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.temp-max {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.temp-min {
+  color: #64748b;
+}
+
+.forecast-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+
+/* ===== SUCCESS BANNER ===== */
+.success-banner {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.success-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.success-banner h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.success-banner p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== ERROR CONTAINER ===== */
+.error-container {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.error-container button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+/* ===== OVERLAY (Mobile) ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+  .sidebar {
+    position: relative;
+    transform: translateX(0);
+  }
+  
+  .menu-toggle {
+    display: none;
+  }
+  
+  .main-content {
+    margin-left: 280px;
+  }
+}
+
+@media (max-width: 767px) {
+  .main-content {
+    padding: 16px;
+    padding-top: 80px;
+  }
+  
+  .weather-main {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .temperature {
+    font-size: 48px;
+  }
+  
+  .weather-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .forecast-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .forecast-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/*
+  The following Tailwind directives require your build process to use Tailwind CSS.
+  Make sure your project is set up with Tailwind and PostCSS.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'leaflet/dist/leaflet.css';
