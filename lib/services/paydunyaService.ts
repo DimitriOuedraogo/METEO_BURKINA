@@ -16,7 +16,8 @@ class PayDunyaService {
       'PAYDUNYA-MASTER-KEY': PAYDUNYA_CONFIG.MASTER_KEY ?? '',
       'PAYDUNYA-PRIVATE-KEY': PAYDUNYA_CONFIG.PRIVATE_KEY ?? '',
       'PAYDUNYA-TOKEN': PAYDUNYA_CONFIG.TOKEN ?? '',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'PAYDUNYA-MODE': PAYDUNYA_CONFIG.SANDBOX ? 'test' : 'live',
     };
   }
 
