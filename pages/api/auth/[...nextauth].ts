@@ -38,9 +38,12 @@ export default NextAuth({
                 }
 
                 // Vérifier le mot de passe
+                if(user.password) {
                 const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) return null;
                 console.log("Mot de passe valide ?", isValid);
+
+                }
 
                 // Retourner les informations de l'utilisateur pour NextAuth
                 return { id: user.id, name: user.username, email: user.email };
