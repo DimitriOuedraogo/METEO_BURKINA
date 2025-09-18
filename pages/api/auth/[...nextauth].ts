@@ -70,22 +70,52 @@ export default NextAuth({
     },
 
     callbacks: {
+        async signIn({ user, account, profile }) {
+            if (account?.provider === "google") {
+                const existingUser = await prisma.user.findUnique({
+                    where: { email: user.email },
+                });
+
+                if (existingUser) {
+                    // Lier le compte Google à cet utilisateur existant
+                    await prisma.account.upsert({
+                        where: {
+                            provider_providerAccountId: {
+                                provider: "google",
+                                providerAccountId: profile?.sub!,
+                            },
+                        },
+                        update: {},
+                        create: {
+                            userId: existingUser.id,
+                            type: "oauth",
+                            provider: "google",
+                            providerAccountId: profile?.sub!,
+                            access_token: account?.access_token!,
+                            refresh_token: account?.refresh_token!,
+                            expires_at: account?.expires_at!,
+                        },
+                    });
+                }
+            }
+            return true;
+        },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
-                token.name = user.name || user.email?.split("@")[0]; // fallback nom
+                token.name = user.name || user.email?.split("@")[0];
             }
-             console.log("token actuel:", token);
             return token;
         },
         async session({ session, token }) {
             if (session.user && token) {
                 session.user.id = token.id as string;
-                session.user.name = token.name as string;   // assure un name
+                session.user.name = token.name as string;
             }
             return session;
         },
     },
+
 
     secret: process.env.NEXTAUTH_SECRET,
 });
