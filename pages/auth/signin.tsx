@@ -1,4 +1,5 @@
-import { AlertCircle, Cloud, Eye, EyeOff, Link, Sun } from "lucide-react";
+import { AlertCircle, Cloud, Eye, EyeOff, Sun } from "lucide-react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -108,7 +109,7 @@ export default function SignInPage() {
         </button>
         <p className="signin-footer">
           Pas encore de compte ?{" "}
-          <a href="/auth/signup" className="signup-link">Inscrivez-vous</a>
+          <Link href="/auth/signup" className="signup-link">Inscrivez-vous</Link>
           
         </p>
 
