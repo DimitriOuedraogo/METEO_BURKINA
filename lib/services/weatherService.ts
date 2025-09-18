@@ -1,6 +1,4 @@
 
-const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
-const BASE_URL = process.env.OPEN_WEATHER_MAP_BASE_URL || '';
 
 export interface WeatherData {
   name: string;
