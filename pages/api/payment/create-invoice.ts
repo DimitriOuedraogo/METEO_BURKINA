@@ -15,6 +15,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       req.headers.origin || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     const invoice = await paydunyaService.createInvoice(plan, origin);
+    
+    console.log('BASE_URL:', process.env.PAYDUNYA_BASE_URL);
+    console.log('PRIVATE_KEY:', process.env.PAYDUNYA_PRIVATE_KEY?.slice(0, 4) + '...');
+
 
     console.log('Réponse PayDunya:', JSON.stringify(invoice, null, 2));
 

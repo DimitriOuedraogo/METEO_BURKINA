@@ -36,18 +36,21 @@ class PayDunyaService {
           email: "contact@votre-app.com",
           website: "https://votre-app.com"
         },
-          actions: {
-            callback_url: `${origin}/api/payment/webhook`,  
-            cancel_url: `${origin}/payment/cancel`,
-            return_url: `${origin}/payment/success?plan=${planData.id}`, 
-          },
-      
+        actions: {
+          callback_url: `${origin}/api/payment/webhook`,
+          cancel_url: `${origin}/payment/cancel`,
+          return_url: `${origin}/payment/success?plan=${planData.id}`,
+        },
+
         custom_data: {
           plan_type: planData.type,
           user_id: 'anonymous',
           plan_duration: '1 month'
         }
       };
+      const url = `${this.baseURL}/checkout-invoice/create`;
+      console.log('URL PayDunya:', url);
+
 
       const response = await axios.post(
         `${this.baseURL}/checkout-invoice/create`,
