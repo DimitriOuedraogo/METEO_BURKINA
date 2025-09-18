@@ -48,15 +48,13 @@ class PayDunyaService {
           plan_duration: '1 month'
         }
       };
-      const url = `${this.baseURL}/checkout-invoice/create`;
+
+      const url = this.baseURL.endsWith('/')
+        ? `${this.baseURL}checkout-invoice/create`
+        : `${this.baseURL}/checkout-invoice/create`;
+
+      const response = await axios.post(url, invoiceData, { headers: this.headers });
       console.log('URL PayDunya:', url);
-
-
-      const response = await axios.post(
-        `${this.baseURL}/checkout-invoice/create`,
-        invoiceData,
-        { headers: this.headers }
-      );
 
       return response.data;
     } catch (error) {
