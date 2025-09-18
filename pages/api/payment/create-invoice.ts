@@ -27,8 +27,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     return res.status(200).json({ checkoutUrl });
-  } catch (error: any) {
-    console.error('Erreur API PayDunya:', error.message);
-    return res.status(500).json({ error: 'Erreur création facture PayDunya' });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Erreur API PayDunya:', error.message);
+      return res.status(500).json({ error: 'Erreur création facture PayDunya' });
+    } else {
+      console.error('Erreur API PayDunya inconnue:', error);
+      return res.status(500).json({ error: 'Erreur création facture PayDunya inconnue' });
+    }
   }
+
 }

@@ -1,4 +1,4 @@
-import { AlertCircle, Cloud, Sun, Eye, EyeOff } from "lucide-react";
+import {  Cloud, Sun, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -74,7 +74,7 @@ export default function SignUpPage() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Nom d'utilisateur</label>
+            <label>Nom d&apos;utilisateur</label>
             <input
               type="text"
               value={username}
@@ -124,7 +124,7 @@ export default function SignUpPage() {
           </div>
 
           <button type="submit" disabled={isLoading} className="auth-button">
-            {isLoading ? "Inscription en cours..." : "S'inscrire"}
+            {isLoading ? "Inscription en cours..." : "S&apos;inscrire"}
           </button>
         </form>
 

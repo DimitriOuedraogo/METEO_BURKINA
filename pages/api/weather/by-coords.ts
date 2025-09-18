@@ -1,5 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+
 import axios from "axios";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
 const BASE_URL = process.env.OPEN_WEATHER_MAP_BASE_URL || "";
@@ -35,8 +36,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       icon: data.weather[0].icon,
       timestamp: Date.now(),
     });
-  } catch (err: any) {
-    console.error("Erreur géolocalisation météo:", err.message || err);
-    res.status(500).json({ error: "Impossible de récupérer les données météo par géolocalisation" });
+  } catch (err: unknown) {
+  if (err instanceof Error) {
+    console.error("Erreur géolocalisation météo:", err.message);
+  } else {
+    console.error("Erreur géolocalisation météo:", err);
   }
+  res.status(500).json({ error: "Impossible de récupérer les données météo par géolocalisation" });
+}
+
 }

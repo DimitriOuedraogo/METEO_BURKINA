@@ -11,6 +11,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noImplicitAny": false,
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -22,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts","types/next-auth.d.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx","types/next-auth.d.ts"],
   "exclude": ["node_modules"]
 }

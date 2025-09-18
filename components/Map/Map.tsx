@@ -141,7 +141,7 @@ export default function BurkinaMeteoMap({ onBackToWeather, isPremium }: BurkinaM
                   Burkina Météo - Carte Interactive
                 </h1>
                 <p className="text-blue-100 mt-1">
-                  Cliquez sur la carte pour obtenir la météo de n'importe quelle localité
+                  Cliquez sur la carte pour obtenir la météo de n&apos;importe quelle localité
                 </p>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function BurkinaMeteoMap({ onBackToWeather, isPremium }: BurkinaM
                   <MapPin className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                   <p className="text-lg font-medium">Sélectionnez une position</p>
                   <p className="text-sm mt-2">
-                    Cliquez n'importe où sur la carte pour obtenir les données météo
+                  {`Cliquez n'importe où sur la carte pour obtenir les données météo`}
                   </p>
                 </div>
               )}

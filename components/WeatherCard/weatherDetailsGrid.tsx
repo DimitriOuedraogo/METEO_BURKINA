@@ -26,7 +26,7 @@ const WeatherDetailsGrid: React.FC<WeatherDetailsGridProps> = ({ weather }) => {
           <span>Humidité</span>
         </div>
         <div className="detail-value">{weather.humidity}%</div>
-        <div className="detail-subtitle">Taux d'humidité</div>
+        <div className="detail-subtitle">Taux d&apos;humidité</div>
       </div>
 
       {/* Vent */}
