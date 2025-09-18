@@ -71,18 +71,17 @@ export default NextAuth({
 
     callbacks: {
         async signIn({ user, account, profile }) {
-            if (account?.provider === "google") {
+            if (account?.provider === "google" && profile?.sub && user.email) {
                 const existingUser = await prisma.user.findUnique({
                     where: { email: user.email },
                 });
 
                 if (existingUser) {
-                    // Lier le compte Google à cet utilisateur existant
                     await prisma.account.upsert({
                         where: {
                             provider_providerAccountId: {
                                 provider: "google",
-                                providerAccountId: profile?.sub!,
+                                providerAccountId: profile.sub, 
                             },
                         },
                         update: {},
@@ -90,14 +89,15 @@ export default NextAuth({
                             userId: existingUser.id,
                             type: "oauth",
                             provider: "google",
-                            providerAccountId: profile?.sub!,
-                            access_token: account?.access_token!,
-                            refresh_token: account?.refresh_token!,
-                            expires_at: account?.expires_at!,
+                            providerAccountId: profile.sub,
+                            access_token: account.access_token ?? "",
+                            refresh_token: account.refresh_token ?? "",
+                            expires_at: account.expires_at ?? 0,
                         },
                     });
                 }
             }
+
             return true;
         },
         async jwt({ token, user }) {
