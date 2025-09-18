@@ -6,11 +6,13 @@ import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "../../../lib/prisma";
 
-
 export default NextAuth({
-
+    // Utiliser Prisma comme adapter pour NextAuth
     adapter: PrismaAdapter(prisma),
+
+    // Définir les providers disponibles pour l'authentification
     providers: [
+        // Authentification par email + mot de passe
         CredentialsProvider({
             name: "Email et mot de passe",
             credentials: {
@@ -19,17 +21,18 @@ export default NextAuth({
             },
             async authorize(credentials) {
                 console.log("Credentials reçues :", credentials);
+
                 if (!credentials?.email || !credentials.password) return null;
 
-                // Chercher l'utilisateur dans la DB
+                // Chercher l'utilisateur correspondant à l'email
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
-                console.log("user trouve:", user);
+                console.log("user trouvé:", user);
 
                 if (!user) return null;
 
-                // Vérifier si l'email est validé
+                // Vérifier que l'email est validé
                 if (!user.emailVerified) {
                     throw new Error("Vous devez vérifier votre email avant de vous connecter.");
                 }
@@ -39,9 +42,12 @@ export default NextAuth({
                 if (!isValid) return null;
                 console.log("Mot de passe valide ?", isValid);
 
+                // Retourner les informations de l'utilisateur pour NextAuth
                 return { id: user.id, name: user.username, email: user.email };
             },
         }),
+
+        // Authentification par email (Magic link)
         EmailProvider({
             server: {
                 host: process.env.EMAIL_SERVER_HOST,
@@ -50,38 +56,44 @@ export default NextAuth({
                     user: process.env.EMAIL_SERVER_USER,
                     pass: process.env.EMAIL_SERVER_PASSWORD,
                 },
-                secure: true, // SSL/TLS
+                secure: true, // Utiliser SSL/TLS
             },
             from: process.env.EMAIL_FROM,
         }),
 
+        // Authentification via Google OAuth
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
     ],
 
+    // Pages personnalisées
     pages: {
         signIn: "/auth/signin",
     },
 
+    // Stockage de la session dans JWT
     session: {
-        strategy: "jwt", // session stockée dans le JWT
+        strategy: "jwt",
     },
 
     callbacks: {
+        // Gestion lors de la connexion
         async signIn({ user, account, profile }) {
+            // Si l'utilisateur se connecte avec Google et existe dans la DB
             if (account?.provider === "google" && profile?.sub && user.email) {
                 const existingUser = await prisma.user.findUnique({
                     where: { email: user.email },
                 });
 
                 if (existingUser) {
+                    // Upsert du compte Google pour lier à l'utilisateur existant
                     await prisma.account.upsert({
                         where: {
                             provider_providerAccountId: {
                                 provider: "google",
-                                providerAccountId: profile.sub, 
+                                providerAccountId: profile.sub,
                             },
                         },
                         update: {},
@@ -100,6 +112,8 @@ export default NextAuth({
 
             return true;
         },
+
+        // Ajouter des infos dans le token JWT
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
@@ -107,6 +121,8 @@ export default NextAuth({
             }
             return token;
         },
+
+        // Ajouter les infos du token à la session côté front
         async session({ session, token }) {
             if (session.user && token) {
                 session.user.id = token.id as string;
@@ -116,6 +132,6 @@ export default NextAuth({
         },
     },
 
-
+    // Secret pour sécuriser les JWT
     secret: process.env.NEXTAUTH_SECRET,
 });

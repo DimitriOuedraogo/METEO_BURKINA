@@ -5,20 +5,21 @@ import nodemailer from "nodemailer";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Vérifier que la méthode est POST
   if (req.method !== "POST") return res.status(405).end();
 
   const { username, email, password } = req.body;
 
-  // Vérifier si l'utilisateur existe déjà
+  // Vérifier si un utilisateur avec le même email existe déjà
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
     return res.status(400).json({ success: false, error: "Email déjà utilisé." });
   }
 
-  // Hasher le mot de passe
+  // Hasher le mot de passe avant de le stocker
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Créer l'utilisateur avec emailVerified = null
+  // Créer l'utilisateur dans la base de données avec email non vérifié
   const user = await prisma.user.create({
     data: {
       username,
@@ -28,19 +29,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
 
-  // Générer un token de vérification
+  // Générer un token unique pour la vérification de l'email
   const token = randomBytes(32).toString("hex");
 
-  // Enregistrer le token dans la table VerificationToken
+  // Enregistrer le token dans la table VerificationToken avec expiration 24h
   await prisma.verificationToken.create({
     data: {
       identifier: email,
       token,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     },
   });
 
-  // Envoyer le mail
+  // Configuration du transporteur pour l'envoi de mail
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_SERVER_HOST,
     port: Number(process.env.EMAIL_SERVER_PORT),
@@ -50,6 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   });
 
+  // Lien de vérification que l'utilisateur devra cliquer
   const verificationUrl = `${process.env.NEXTAUTH_URL}/auth/verify?token=${token}&email=${email}`;
 await transporter.sendMail({
   from: process.env.EMAIL_FROM,
@@ -86,5 +88,6 @@ await transporter.sendMail({
   `,
 });
 
-return res.status(200).json({ success: true });
+  // Retourner succès au front-end
+  return res.status(200).json({ success: true });
 }

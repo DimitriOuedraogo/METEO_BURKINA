@@ -3,8 +3,11 @@ import { Plan } from "../../types/plan";
 import { WeatherAdvice } from "../../types/weatherAdvice";
 import { WeatherData } from "./weatherService";
 
-type PlanType = "free" | "premium" | "enterprise";
 
+/**
+ * Service pour générer des conseils météo personnalisés
+ * en utilisant Gemini AI ou un fallback local
+ */
 class GeminiWeatherAdvisor {
   private apiKey: string;
   private baseUrl: string;
@@ -14,6 +17,9 @@ class GeminiWeatherAdvisor {
     this.baseUrl = baseUrl;
   }
 
+  /**
+   * Obtenir des conseils météo basés sur les données météo et le plan de l'utilisateur
+   */
   async getAdvice(weatherData: WeatherData, plan: Plan): Promise<WeatherAdvice> {
     const prompt = this.buildPrompt(weatherData, plan);
 
@@ -28,6 +34,7 @@ class GeminiWeatherAdvisor {
       });
 
       const data = await response.json();
+
       if (data.error) {
         console.error("Erreur Gemini:", data);
         throw new Error(`[${data.status || "500"}] ${data.error.message}`);
@@ -38,7 +45,7 @@ class GeminiWeatherAdvisor {
     } catch (error: any) {
       console.error("Erreur Gemini conseils:", error.message);
 
-      // Retour fallback avec distinction des plans
+      // Fallback local si Gemini indisponible
       return {
         ...this.getFallbackAdvice(weatherData, plan),
         general: [
@@ -49,6 +56,9 @@ class GeminiWeatherAdvisor {
     }
   }
 
+  /**
+   * Générer le prompt à envoyer à Gemini AI selon le plan
+   */
   private buildPrompt(weather: WeatherData, plan: Plan): string {
     let base = `Tu es un expert météorologue spécialisé dans le climat du Burkina Faso. 
 
@@ -116,6 +126,9 @@ Reste concis et pratique. Utilise le français simple.`;
     return base;
   }
 
+  /**
+   * Parse la réponse générée par Gemini et retourne un objet WeatherAdvice
+   */
   private parseResponse(response: string, plan: Plan): WeatherAdvice {
     const advice: WeatherAdvice = { general: [], health: [], activities: [], agriculture: [], enterprise: [] };
     const sections = response.split("**");
@@ -131,6 +144,7 @@ Reste concis et pratique. Utilise le français simple.`;
       else if (plan.type === "enterprise" && section.toLowerCase().includes("entreprise")) advice.enterprise = this.extractBullets(nextSection);
     }
 
+    // Si aucune section principale détectée, fallback simple
     if (advice.general.length === 0 && advice.health.length === 0) {
       return this.parseSimpleResponse(response, plan);
     }
@@ -138,6 +152,7 @@ Reste concis et pratique. Utilise le français simple.`;
     return advice;
   }
 
+  /** Extract bullet points from Gemini response */
   private extractBullets(text: string): string[] {
     return text
       .split("\n")
@@ -146,6 +161,7 @@ Reste concis et pratique. Utilise le français simple.`;
       .filter((line) => line.length > 0);
   }
 
+  /** Fallback si le parsing standard échoue */
   private parseSimpleResponse(response: string, plan: Plan): WeatherAdvice {
     const lines = response.split("\n").filter((line) => line.trim().startsWith("-"));
     const advice: WeatherAdvice = { general: [], health: [], activities: [], agriculture: [], enterprise: [] };
@@ -159,9 +175,13 @@ Reste concis et pratique. Utilise le français simple.`;
     return advice;
   }
 
+  /**
+   * Conseils fallback si Gemini indisponible ou erreur API
+   */
   private getFallbackAdvice(weather: WeatherData, plan: Plan): WeatherAdvice {
     const advice: WeatherAdvice = { general: [], health: [], activities: [], agriculture: [], enterprise: [] };
 
+    // Conseils basés sur la température
     if (weather.temperature > 35) {
       advice.general.push("Température très élevée, évitez l'exposition au soleil entre 12h et 16h");
       advice.health.push("Buvez au minimum 2-3 litres d'eau par jour");
@@ -170,19 +190,22 @@ Reste concis et pratique. Utilise le français simple.`;
       advice.health.push("Restez hydraté et portez des vêtements légers");
     } else if (weather.temperature < 25) advice.general.push("Température agréable, idéale pour les activités extérieures");
 
+    // Humidité
     if (weather.humidity > 70) advice.health.push("Humidité élevée, attention aux moustiques, utilisez des répulsifs");
 
+    // Vent
     if (weather.wind_speed > 25) {
       advice.general.push("Vent fort, sécurisez vos affaires et évitez les activités en hauteur");
       if (plan.type !== "free") advice.activities.push("Évitez les sports en extérieur, préférez les activités à l'intérieur");
     } else if (weather.wind_speed < 10 && plan.type !== "free") advice.activities.push("Pas de vent, parfait pour les pique-niques et activités extérieures");
 
+    // Pluie
     if (weather.description.toLowerCase().includes("pluie")) {
       advice.general.push("Temps pluvieux, pensez à prendre un parapluie ou imperméable");
       if (plan.type !== "free") advice.activities.push("Privilégiez les activités intérieures ou sous abri");
     }
 
-    // Conseils fictifs pour entreprise si plan enterprise
+    // Conseils entreprise
     if (plan.type === "enterprise") {
       advice.enterprise!.push("Prévoyez des protections pour vos marchandises en cas d'intempéries.");
       advice.enterprise!.push("Planifiez les horaires de travail en fonction des conditions climatiques.");
@@ -192,7 +215,7 @@ Reste concis et pratique. Utilise le français simple.`;
   }
 }
 
-// Export singleton
+// Export singleton pour utilisation dans le projet
 const geminiAdvisor = new GeminiWeatherAdvisor(
   process.env.GEMINI_API_KEY || "",
   process.env.GEMINI_BASE_URL || ""
