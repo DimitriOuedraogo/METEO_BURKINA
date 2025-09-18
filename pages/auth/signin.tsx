@@ -108,7 +108,8 @@ export default function SignInPage() {
         </button>
         <p className="signin-footer">
           Pas encore de compte ?{" "}
-          <Link href="/auth/signup" className="signup-link">Inscrivez-vous</Link>
+          <a href="/auth/signup" className="signup-link">Inscrivez-vous</a>
+          
         </p>
 
         <Sun className="sun-animate" />

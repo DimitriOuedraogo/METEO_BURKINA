@@ -124,7 +124,7 @@ export default function SignUpPage() {
           </div>
 
           <button type="submit" disabled={isLoading} className="auth-button">
-            {isLoading ? "Inscription en cours..." : "S&apos;inscrire"}
+            {isLoading ? "Inscription en cours..." : "Cree un Compte"}
           </button>
         </form>
 
