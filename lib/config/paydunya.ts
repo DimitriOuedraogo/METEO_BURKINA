@@ -4,5 +4,5 @@ export const PAYDUNYA_CONFIG = {
   PRIVATE_KEY: process.env.PAYDUNYA_PRIVATE_KEY,
   PUBLIC_KEY: process.env.PAYDUNYA_PUBLIC_KEY,
   TOKEN: process.env.PAYDUNYA_TOKEN,
-  SANDBOX: false, // Mettre à false en production
+  SANDBOX: true, // Mettre à false en production
 };
