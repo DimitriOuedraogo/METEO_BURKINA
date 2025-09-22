@@ -13,22 +13,27 @@
 
   z-index: 1000;
 }
-
 .sidebarFooter {
-  margin-top: auto;        
-  font-size: 18px;         
-  text-align: center;    
-  color: #64748b;          
-  padding-top: 12px;
+  margin-top: auto; /* pousse le lien en bas de la sidebar */
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 16px;
+  color: #94a3b8; /* gris doux */
+  border-top: 1px solid #e2e8f0; /* séparateur léger */
 }
+
 .sidebarFooter a {
-  color: #3b82f6;
-  text-decoration: none;
+  color: #3b82f6; /* bleu pro */
   font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s, text-decoration 0.2s;
 }
+
 .sidebarFooter a:hover {
+  color: #2563eb; /* bleu un peu plus foncé au hover */
   text-decoration: underline;
 }
+
 
 .open {
   transform: translateX(0);

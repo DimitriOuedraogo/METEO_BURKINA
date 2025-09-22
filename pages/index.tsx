@@ -175,17 +175,17 @@ export default function HomePage() {
         )}
 
         {/* Footer mobile - Affiché seulement sur mobile */}
-        <div className="block md:hidden mt-8 py-4 text-center text-xs text-gray-500 border-t border-gray-200">
-              {" "}
+        <div className="block md:hidden mt-6 py-3 text-center text-[11px] text-gray-400 border-t border-gray-100">
           <Link
             href="https://port-folio-gray-two.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline font-medium"
+            className="text-blue-600 hover:text-blue-700 hover:underline transition-colors font-semibold tracking-wide"
           >
-             Découvrez nous !
+            Découvrez nous !
           </Link>
         </div>
+
       </div>
 
       {/* Overlay pour fermer la sidebar sur mobile */}
