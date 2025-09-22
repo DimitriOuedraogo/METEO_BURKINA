@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, Map, MapPin, Search, Sun, X } from 'lucide-react';
 import React, { useState } from 'react';
 import styles from '../../styles/sidebar.module.css';
+import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 
@@ -144,6 +145,17 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
             </div>
           )}
+          <p className="text-xs text-gray-400 text-center mt-6">
+            Développé par{" "}
+            <Link
+              href="https://port-folio-gray-two.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-400 transition-colors"
+            >
+              Dimitri OUEDRAOGO – Développeur Fullstack
+            </Link>
+          </p>
 
         </div>
       </div>
