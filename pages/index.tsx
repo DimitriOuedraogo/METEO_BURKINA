@@ -176,14 +176,14 @@ export default function HomePage() {
 
         {/* Footer mobile - Affiché seulement sur mobile */}
         <div className="block md:hidden mt-8 py-4 text-center text-xs text-gray-500 border-t border-gray-200">
-          Développé par{" "}
+              {" "}
           <Link
             href="https://port-folio-gray-two.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline font-medium"
           >
-            Dimitri OUEDRAOGO – Développeur Fullstack
+             Découvrez nous !
           </Link>
         </div>
       </div>

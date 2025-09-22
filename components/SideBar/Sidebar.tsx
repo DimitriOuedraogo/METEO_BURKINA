@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <X className="w-6 h-6" />
           </button>
         </div>
-        
+
         {/* Header / Logo */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
@@ -149,13 +149,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Footer - SORTI du navigationMenu et placé directement dans sidebar */}
         <div className={styles.sidebarFooter}>
-          Développé par{" "}
+          {" "}
           <Link
             href="https://port-folio-gray-two.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Dimitri OUEDRAOGO – Développeur Fullstack
+            Découvrez nous !
           </Link>
         </div>
       </div>
