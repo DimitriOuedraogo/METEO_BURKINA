@@ -10,14 +10,29 @@
   overflow-y: auto;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
+
   z-index: 1000;
 }
 
+.sidebarFooter {
+  margin-top: auto;        
+  font-size: 12px;         
+  text-align: center;    
+  color: #64748b;          
+  padding-top: 12px;
+}
+.sidebarFooter a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+.sidebarFooter a:hover {
+  text-decoration: underline;
+}
 
 .open {
   transform: translateX(0);
 }
-
 
 
 .sidebarHeader {

@@ -1,9 +1,8 @@
 import { ChevronDown, ChevronRight, Map, MapPin, Search, Sun, X } from 'lucide-react';
+import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { useState } from 'react';
 import styles from '../../styles/sidebar.module.css';
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-
 
 interface SidebarProps {
   cities: string[];
@@ -47,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <X className="w-6 h-6" />
           </button>
         </div>
+        
         {/* Header / Logo */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
@@ -145,18 +145,18 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
             </div>
           )}
-          <p className="text-xs text-gray-400 text-center mt-6">
-            Développé par{" "}
-            <Link
-              href="https://port-folio-gray-two.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-400 transition-colors"
-            >
-              Dimitri OUEDRAOGO – Développeur Fullstack
-            </Link>
-          </p>
+        </div>
 
+        {/* Footer - SORTI du navigationMenu et placé directement dans sidebar */}
+        <div className={styles.sidebarFooter}>
+          Développé par{" "}
+          <Link
+            href="https://port-folio-gray-two.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Dimitri OUEDRAOGO – Développeur Fullstack
+          </Link>
         </div>
       </div>
     </>

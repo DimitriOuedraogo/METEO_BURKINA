@@ -3,10 +3,10 @@
 
 // Import des icônes et fonctions pour l'authentification
 import { Menu } from 'lucide-react';
-import { signIn, signOut, useSession } from "next-auth/react";
 
 // Import dynamique pour le composant Map afin d'éviter le rendu côté serveur
 import dynamic from 'next/dynamic';
+import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -65,7 +65,7 @@ export default function HomePage() {
         setPlan(foundPlan);
         setPaid(true);
       }
-      // Nettoyer l’URL pour éviter de relancer l'effet au rechargement
+      // Nettoyer l'URL pour éviter de relancer l'effet au rechargement
       router.replace('/', undefined, { shallow: true });
     }
   }, [router.query]);
@@ -173,6 +173,19 @@ export default function HomePage() {
             <button onClick={() => loadWeatherData(selectedCity)}>Réessayer</button>
           </div>
         )}
+
+        {/* Footer mobile - Affiché seulement sur mobile */}
+        <div className="block md:hidden mt-8 py-4 text-center text-xs text-gray-500 border-t border-gray-200">
+          Développé par{" "}
+          <Link
+            href="https://port-folio-gray-two.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline font-medium"
+          >
+            Dimitri OUEDRAOGO – Développeur Fullstack
+          </Link>
+        </div>
       </div>
 
       {/* Overlay pour fermer la sidebar sur mobile */}
